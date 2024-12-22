@@ -1,5 +1,5 @@
 ﻿using CrudEmploye.Context;
-using CrudEmploye.Entities;
+using CrudEmploye.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,11 +19,21 @@ namespace CrudEmploye.Controllers
         [HttpGet]
         [Route("lista")]
         
-        public async Task<ActionResult<List<Profile>>> GetProfile()
+        public async Task<ActionResult<List<ProfileDTO>>> GetProfile()
         {
-            var profileList = await _context.Profiles.ToListAsync();
+            var DtoList = new List<ProfileDTO>();
+            var DbList = await _context.Profiles.ToListAsync();
 
-            return Ok(profileList); 
+            foreach (var item in DbList)
+            {
+                DtoList.Add(new ProfileDTO
+                {
+                    IdProfile = item.IdProfile,
+                    Name = item.Name,
+                });
+            }    
+
+            return Ok(DbList); 
         }
     }
 }
